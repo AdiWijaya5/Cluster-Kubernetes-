@@ -1,0 +1,65 @@
+# Abaikan file env dan folder terrafrom
+# Local .terraform directories
+.terraform/
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files, which are likely to contain sensitive data
+*.tfvars
+*.tfvars.json
+
+# Ignore private keys / PEM files
+*.pem
+*.key
+
+# .terraform.lock.hcl can be included or ignored (recommended to include if you want strict version locking, but can be ignored)
+#.terraform.lock.hcl
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Ansible execution artifacts
+*.retry
+
+# Ansible Galaxy dependencies
+# Hapus tanda komentar (#) jika Anda mengunduh role/collection eksternal ke folder ini
+# roles/
+# collections/
+config/
+group_vars/
+ansible.cfg
+Inventory/
+
+# Sensitive data / Passwords
+*.vault_password
+.vault_pass
+secrets_plain.yml
+
+# Python environment & cache
+*.py[co]
+__pycache__/
+.venv/
+venv/
+env/
+
+# Logging
+*.log
+
+# IDE and OS files
+.DS_Store
+.idea/
+.vscode/
+.history/
+
+
+

@@ -1,0 +1,56 @@
+---
+- name: Create New User and Setup Access
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Create user new with password enkripsi and group
+      ansible.builtin.user:
+        name: "{{ app_user }}"
+        password: "{{ app_user_password_hash }}"
+        shell: /bin/bash
+        create_home: true
+        groups: sudo
+        append: true
+
+    - name: Ensure .ssh directory exists with correct permissions
+      ansible.builtin.file:
+        path: "/home/{{ app_user }}/.ssh"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0700"
+
+    - name: Add SSH Public Key for secure login (.pem key)
+      ansible.builtin.authorized_key:
+        user: "{{ app_user }}"
+        state: present
+        key: "{{ ssh_public_key }}"
+
+    - name: Enable password authentication in SSH configuration
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication yes"
+        state: present
+      notify: Restart SSH
+
+    - name: Enable SSH kayboard-interactive authentication in SSH configuration
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^KbdInteractiveAuthentication"
+        line: "KbdInteractiveAuthentication yes"
+        state: present
+      notify: Restart SSH
+
+  handlers:
+    - name: Validate SSH configuration
+      ansible.builtin.command: sshd -t
+      changed_when: false
+      listen: Restart SSH
+
+    - name: Restart SSH
+      ansible.builtin.service:
+        name: ssh
+        state: restarted
+      become: true
